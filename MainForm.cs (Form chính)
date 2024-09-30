@@ -1,0 +1,70 @@
+using System;
+using System.Windows.Forms;
+
+namespace EmployeeManagement
+{
+    public partial class MainForm : Form
+    {
+        public MainForm()
+        {
+            InitializeComponent();
+        }
+
+        private void MainForm_Load(object sender, EventArgs e)
+        {
+            // Khởi tạo một vài dữ liệu mẫu cho DataGridView khi Form tải lên
+            dgvEmployees.Rows.Add("001", "Nguyễn Văn A", "5000");
+            dgvEmployees.Rows.Add("002", "Trần Thị B", "6000");
+        }
+
+        private void btnAdd_Click(object sender, EventArgs e)
+        {
+            EmployeeForm employeeForm = new EmployeeForm();
+            if (employeeForm.ShowDialog() == DialogResult.OK)
+            {
+                dgvEmployees.Rows.Add(employeeForm.EmployeeID, employeeForm.EmployeeName, employeeForm.Salary);
+            }
+        }
+
+        private void btnEdit_Click(object sender, EventArgs e)
+        {
+            if (dgvEmployees.SelectedRows.Count > 0)
+            {
+                var selectedRow = dgvEmployees.SelectedRows[0];
+                string msnv = selectedRow.Cells["MSNV"].Value.ToString();
+                string tenNV = selectedRow.Cells["TenNV"].Value.ToString();
+                string luongCB = selectedRow.Cells["LuongCB"].Value.ToString();
+
+                EmployeeForm employeeForm = new EmployeeForm
+                {
+                    EmployeeID = msnv,
+                    EmployeeName = tenNV,
+                    Salary = luongCB
+                };
+
+                if (employeeForm.ShowDialog() == DialogResult.OK)
+                {
+                    selectedRow.Cells["MSNV"].Value = employeeForm.EmployeeID;
+                    selectedRow.Cells["TenNV"].Value = employeeForm.EmployeeName;
+                    selectedRow.Cells["LuongCB"].Value = employeeForm.Salary;
+                }
+            }
+            else
+            {
+                MessageBox.Show("Vui lòng chọn nhân viên để sửa!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
+        }
+
+        private void btnDelete_Click(object sender, EventArgs e)
+        {
+            if (dgvEmployees.SelectedRows.Count > 0)
+            {
+                dgvEmployees.Rows.Remove(dgvEmployees.SelectedRows[0]);
+            }
+            else
+            {
+                MessageBox.Show("Vui lòng chọn nhân viên để xóa!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
+        }
+    }
+}
